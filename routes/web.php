@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\ProjectController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,13 +20,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('admin.index');
+    return view('welcome');
 });
 
-Route::resource('partners', 'PartnerController');
-Route::resource('projects', 'ProjectController');
+Route::resource('partners', PartnerController::class);
+Route::resource('projects', ProjectController::class);
+Route::resource('artists', ArtistController::class);
+Route::resource('admin', AdminController::class);
+
+
+
 
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');

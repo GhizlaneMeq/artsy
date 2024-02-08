@@ -125,16 +125,20 @@
 
 <body>
 
-    <form>
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
         <h3>Login Here</h3>
+        
 
         <label for="username">Username</label>
-        <input type="text" placeholder="Email or Phone" id="username">
+        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+
 
         <label for="password">Password</label>
-        <input type="password" placeholder="Password" id="password">
+        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
 
-        <button>Log In</button>
+
+        <button type="submit">Log In</button>
 
     </form>
 </body>

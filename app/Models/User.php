@@ -21,15 +21,15 @@ class User extends Authenticatable
     use SoftDeletes;
 
     protected $fillable = [
-        'firstname', 
-        'lastname', 
-        'email', 
-        'password', 
-        'phone', 
+        'firstname',
+        'lastname',
+        'email',
+        'password',
+        'phone',
         'role_id'
     ];
 
-   
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -50,6 +50,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function isAdmin()
+    {
+        return $this->role->name === 'admin';
+    }
+
+    public function isArtist()
+    {
+        return $this->role->name === 'artist';
+    }
+
+    public function isPartner()
+    {
+        return $this->role->name === 'partner';
+    }
 
     public function role()
     {
