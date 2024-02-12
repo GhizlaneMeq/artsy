@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Partner;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -11,17 +13,19 @@ class ProjectController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $projects = Project::all();
-        return view('projects.index', compact('projects'));
-    }
+{
+    $projects = Project::with('partner', 'users')->get();
+    return view('admin.project.index', compact('projects'));
+}
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('projects.create');
+        $partners = Partner::doesntHave('projects')->get();
+        $users = User::all();
+        return view('admin.project.create', compact('partners', 'users'));
     }
 
     /**
@@ -29,7 +33,14 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        Project::create($request->all());
+        $project=Project::create($request->all());
+
+
+        dd($request->all());
+
+        if ($request->has('artist_ids')) {
+            $project->users()->attach($request->input('artist_ids'));
+        }
         return redirect()->route('projects.index')->with('success', 'Project created successfully.');
     }
 
@@ -38,7 +49,10 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return view('projects.show', compact('project'));
+        $project->load('partner', 'users');
+
+        return view('admin.project.details', compact('project'));
+
     }
 
     /**
@@ -46,7 +60,11 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        return view('projects.edit', compact('project'));
+        $users = User::all();
+        $partners = Partner::all();
+
+        // Load the edit view with project details and related data
+        return view('admin.project.edit', compact('project', 'users', 'partners'));
     }
 
     /**
@@ -55,6 +73,13 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $project->update($request->all());
+
+        if ($request->has('artist_ids')) {
+            $project->users()->sync($request->input('artist_ids'));
+        } else {
+            $project->users()->detach();
+        }
+
         return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
     }
 
@@ -66,4 +91,6 @@ class ProjectController extends Controller
         $project->delete();
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
+
+
 }

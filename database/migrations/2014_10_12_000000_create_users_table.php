@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('lastname');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->foreignId('role_id')->default(2)->constrained()->onDelete('cascade');
             $table->softDeletes();
             $table->rememberToken();

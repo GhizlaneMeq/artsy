@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Partner;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,14 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+            'start_date' => $this->faker->date,
+            'end_date' => $this->faker->date,
+            'status' => $this->faker->randomElement(['accepted', 'not_accepted']),
+            'budget' => $this->faker->randomFloat(2, 1000, 10000),
+            'progress' => $this->faker->randomElement(['pending', 'ongoing', 'completed']),
+            'partner_id' => $this->faker->numberBetween(1, 30),
         ];
     }
 }

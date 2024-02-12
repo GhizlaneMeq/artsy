@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Mail\UserCreatedMail;
+use Mail;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 class UserController extends Controller
 {
     /**
@@ -12,8 +16,9 @@ class UserController extends Controller
      */
     public function index()
     {
+
         $users = User::all();
-        return view('users.index', compact('users'));
+        return view('admin.artist.display', compact('users'));
     }
 
     /**
@@ -21,7 +26,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        return view('admin.artist.create');
     }
 
     /**
@@ -29,14 +34,33 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        User::create($request->all());
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+        $validatedData = $request->validate([
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+        ]);
+
+        $password = Str::random(10);
+
+        $user = User::create([
+            'firstname' => $validatedData['firstname'],
+            'lastname' => $validatedData['lastname'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($password),
+        ]);
+
+
+        Mail::to($user->email)->send(new UserCreatedMail($password));
+
+        return redirect()->back()->with('success', 'User created successfully.');
+
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
         return view('users.show', compact('user'));
     }
@@ -46,7 +70,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        return view('admin.artist.edit', compact('user'));
     }
 
     /**
@@ -66,5 +90,9 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function test(){
+        echo 'hi';
     }
 }

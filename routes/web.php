@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -22,14 +23,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/test', [UserController::class, 'test']);
 
+Route::prefix('admin')->group(function () {
 Route::resource('partners', PartnerController::class);
 Route::resource('projects', ProjectController::class);
-Route::resource('artists', ArtistController::class);
-Route::resource('admin', AdminController::class);
+Route::resource('', ArtistController::class);
+Route::resource('', AdminController::class);
+Route::resource('users', UserController::class);
 
 
-
+});
 
 
 Auth::routes();

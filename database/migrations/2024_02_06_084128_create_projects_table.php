@@ -17,8 +17,9 @@ return new class extends Migration
             $table->text('description');
             $table->date('start_date');
             $table->date('end_date');
-            $table->string('status');
-            $table->float('avancement');
+            $table->enum('status', ['accepted', 'not_accepted']);
+            $table->decimal('budget', 10, 2); 
+            $table->enum('progress', ['pending', 'ongoing', 'completed'])->default('pending');
             $table->foreignId('partner_id')->constrained()->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
