@@ -6,6 +6,7 @@
             <h2 class="text-2xl font-bold mb-8 text-center">Create a New Project</h2>
             <form action="{{ route('projects.store') }}" method="POST" class="space-y-4">
                 @csrf
+                <input type="hidden" name="owner" value="{{ auth()->user()->firstname }} {{ auth()->user()->lastname }}">
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
                     <input type="text" name="title" id="title"

@@ -24,7 +24,6 @@ class ProjectFactory extends Factory
             'end_date' => $this->faker->date,
             'status' => $this->faker->randomElement(['accepted', 'not_accepted']),
             'budget' => $this->faker->randomFloat(2, 1000, 10000),
-            'progress' => $this->faker->randomElement(['pending', 'ongoing', 'completed']),
             'partner_id' => $this->faker->numberBetween(1, 30),
         ];
     }

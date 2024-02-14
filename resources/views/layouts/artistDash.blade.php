@@ -25,7 +25,8 @@
 </head>
 
 <body class="bg-gray-100 dark:bg-gray-900">
-    <div class="flex flex-col w-screen h-screen overflow-auto text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
+    <div
+        class="flex flex-col w-screen h-screen overflow-auto text-gray-700 bg-gradient-to-tr from-blue-200 via-indigo-200 to-pink-200">
         <div class="flex items-center flex-shrink-0 h-16 px-10 bg-white bg-opacity-75">
             <svg class="w-8 h-8 text-indigo-600 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24" stroke="currentColor">
@@ -36,17 +37,21 @@
                 class="flex items-center h-10 px-4 ml-10 text-sm bg-gray-200 rounded-full focus:outline-none focus:ring"
                 type="search" placeholder="Search for anything…">
             <div class="ml-10">
-                <a class="mx-2 text-sm font-semibold text-indigo-700" href="{{ route('projects.userProjects') }}">My Projects</a>
-                <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700" href="{{ route('projects.index') }}">Projects</a>
-                <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700" href="{{ route('partners.index') }}">Partners</a>
+                <a class="mx-2 text-sm font-semibold text-indigo-700" href="{{ route('projects.userProjects') }}">My
+                    Projects</a>
+                <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700"
+                    href="{{ route('projects.index') }}">Projects</a>
+                <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700"
+                    href="{{ route('partners.index') }}">Partners</a>
                 <a id="createProjectBtn"
                     class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700 cursor-pointer"
                     href="{{ route('projects.create') }}">Create Project</a>
             </div>
-            <buton class="flex items-center justify-center w-8 h-8 ml-auto overflow-hidden rounded-full cursor-pointer">
+            <button
+                class="flex items-center justify-center w-8 h-8 ml-auto overflow-hidden rounded-full cursor-pointer">
                 {{-- <img src="https://assets.codepen.io/5041378/internal/avatars/users/default.png?fit=crop&format=auto&height=512&version=1600304177&width=512"
                     alt=""> --}}
-            </buton>
+            </button>
         </div>
         @yield('content')
     </div>
@@ -136,10 +141,42 @@
                 column.addEventListener("drop", event => {
                     const draggable = document.querySelector(".dragging");
                     const newStatus = column.id;
+                    const projectId = draggable.dataset.id;
+
                     draggable.setAttribute("data-status", newStatus);
-                    sendStatusUpdate(draggable.dataset.id, newStatus);
+
+                    sendStatusUpdate(projectId, newStatus);
+
                 });
             });
+
+            function sendStatusUpdate(projectId, newStatus) {
+                const url = "projects/update-status";
+                const data = {
+                    projectId: projectId,
+                    newStatus: newStatus
+                };
+
+                fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify(data),
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        console.log("Project status updated successfully.");
+                    })
+                    .catch(error => {
+                        console.error("There was a problem updating the project status:", error);
+                    });
+            }
+
+
 
             function getDragAfterElement(column, y) {
                 const draggableElements = [...column.querySelectorAll(".draggable:not(.dragging)")];

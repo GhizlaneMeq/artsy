@@ -47,6 +47,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::prefix('artist')->group(function () {
     Route::get('user-projects', [ArtistProjectController::class, 'userProjects'])->name('projects.userProjects');
     Route::resource('projects', ArtistProjectController::class);
+    Route::post('projects/update-status',[ ArtistProjectController::class,'updatestatus']);
     Route::resource('partners', ArtistPartnerController::class);
 
 });

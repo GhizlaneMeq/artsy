@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
+            $table->string('owner')->default('admin');
             $table->date('start_date');
             $table->date('end_date');
             $table->enum('status', ['accepted', 'not_accepted']);
-            $table->decimal('budget', 10, 2); 
-            $table->enum('progress', ['pending', 'ongoing', 'completed'])->default('pending');
+            $table->decimal('budget', 10, 2);
             $table->foreignId('partner_id')->constrained()->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
