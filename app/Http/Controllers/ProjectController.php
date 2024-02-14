@@ -34,10 +34,6 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $project=Project::create($request->all());
-
-
-        dd($request->all());
-
         if ($request->has('artist_ids')) {
             $project->users()->attach($request->input('artist_ids'));
         }
@@ -63,7 +59,6 @@ class ProjectController extends Controller
         $users = User::all();
         $partners = Partner::all();
 
-        // Load the edit view with project details and related data
         return view('admin.project.edit', compact('project', 'users', 'partners'));
     }
 

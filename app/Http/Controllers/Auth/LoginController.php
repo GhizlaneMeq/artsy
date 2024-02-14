@@ -40,13 +40,13 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
 {
-    
+
     if ($user->isAdmin()) {
         return redirect()->route('admin.index');
     } elseif ($user->isArtist()) {
-        return redirect()->route('artists.index');
+        return redirect()->route('users.index');
     } elseif ($user->isPartner()) {
         return redirect()->route('partner.index');
-    } 
+    }
 }
 }

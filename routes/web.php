@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\artist\PartnerController as ArtistPartnerController;
+use App\Http\Controllers\artist\ProjectController as ArtistProjectController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\PartnerController;
@@ -26,11 +28,12 @@ Route::get('/', function () {
 Route::get('/test', [UserController::class, 'test']);
 
 Route::prefix('admin')->group(function () {
-Route::resource('partners', PartnerController::class);
+/* Route::resource('partners', PartnerController::class);
 Route::resource('projects', ProjectController::class);
-Route::resource('', ArtistController::class);
-Route::resource('', AdminController::class);
+Route::resource('artists', ArtistController::class);
+Route::resource('', AdminController::class); */
 Route::resource('users', UserController::class);
+/* Route::resource('dashboard', AdminController::class); */
 
 
 });
@@ -39,3 +42,11 @@ Route::resource('users', UserController::class);
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+
+Route::prefix('artist')->group(function () {
+    Route::get('user-projects', [ArtistProjectController::class, 'userProjects'])->name('projects.userProjects');
+    Route::resource('projects', ArtistProjectController::class);
+    Route::resource('partners', ArtistPartnerController::class);
+
+});

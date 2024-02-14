@@ -1,28 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\artist;
 
+use App\Http\Controllers\Controller;
 use App\Models\Partner;
-use App\Models\Project;
-use App\Models\User;
 use Illuminate\Http\Request;
 
-class AdminController extends Controller
+class PartnerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $recentUsers = User::latest()->take(5)->get();
-
-        $recentPartners = Partner::latest()->take(5)->get();
-
-        $projectsWithPartners = Project::has('partner')->get();
-
-        $projectsWithoutPartners = Project::doesntHave('partner')->get();
-
-        return view('admin.index', compact('recentUsers', 'recentPartners', 'projectsWithPartners', 'projectsWithoutPartners'));
+        $partners = Partner::all();
+        $partners->load('projects');
+        return view('artist.partners.display', compact('partners'));
     }
 
     /**
@@ -44,9 +37,10 @@ class AdminController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Partner $partner)
     {
-        //
+        $projects = $partner->projects()->latest()->get();
+        return view('artist.partners.profile', compact('partner', 'projects'));
     }
 
     /**

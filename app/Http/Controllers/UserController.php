@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Mail\UserCreatedMail;
+use App\Models\Project;
 use Mail;
 
 use Illuminate\Http\Request;
@@ -16,10 +17,19 @@ class UserController extends Controller
      */
     public function index()
     {
+        $projects = Project::all();
 
-        $users = User::all();
-        return view('admin.artist.display', compact('users'));
-    }
+        $completedProjects = $projects->where('progress', 'completed');
+        $ongoingProjects = $projects->where('progress', 'ongoing');
+        $pendingProjects = $projects->where('progress', 'pending');
+
+        $completedProjectsCount = $completedProjects->count();
+        $ongoingProjectsCount = $ongoingProjects->count();
+        $pendingProjectsCount = $pendingProjects->count();
+
+        return view('artist.index', compact('completedProjects', 'ongoingProjects', 'pendingProjects', 'completedProjectsCount', 'ongoingProjectsCount', 'pendingProjectsCount'));
+}
+
 
     /**
      * Show the form for creating a new resource.
