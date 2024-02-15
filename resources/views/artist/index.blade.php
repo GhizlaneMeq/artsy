@@ -6,7 +6,7 @@
 </div>
 <div class="flex flex-grow px-10 mt-4 space-x-6 overflow-auto">
 
-    <div class="flex flex-col flex-shrink-0 w-72" id="pending-column">
+    <div class="flex flex-col flex-shrink-0 w-72" id="pending">
         <div class="flex items-center flex-shrink-0 h-10 px-2">
             <span class="block text-sm font-semibold">Pending</span>
             <span
@@ -41,7 +41,7 @@
             @endif
         </div>
     </div>
-    <div class="flex flex-col flex-shrink-0 w-72" id="ongoing-column">
+    <div class="flex flex-col flex-shrink-0 w-72" id="ongoing">
         <div class="flex items-center flex-shrink-0 h-10 px-2">
             <span class="block text-sm font-semibold">Ongoing</span>
             <span class="flex items-center justify-center w-5 h-5 ml-2 text-sm font-semibold text-white rounded bg-green-500">{{ $ongoingProjectsCount }}</span>
@@ -52,7 +52,7 @@
             @else
                 @foreach ($ongoingProjects as $project)
                     <div class="relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100 draggable"
-                        draggable="true">
+                    draggable="true" data-id="{{ $project->id }}" data-status="Ongoing">
                         <span class="flex items-center h-6 px-3 text-xs font-semibold text-green-500 bg-green-200 rounded-full">Ongoing</span>
                         <h4 class="mt-3 text-sm font-medium">{{ $project->title }}</h4>
                         <p class="text-sm">{{ $project->description }}</p>
@@ -73,7 +73,7 @@
             @endif
         </div>
     </div>
-    <div class="flex flex-col flex-shrink-0 w-72" id="completed-column">
+    <div class="flex flex-col flex-shrink-0 w-72" id="completed">
         <div class="flex items-center flex-shrink-0 h-10 px-2">
             <span class="block text-sm font-semibold">Completed</span>
             <span class="flex items-center justify-center w-5 h-5 ml-2 text-sm font-semibold text-white rounded bg-pink-500">{{ $completedProjectsCount }}</span>
@@ -84,7 +84,7 @@
             @else
                 @foreach ($completedProjects as $project)
                     <div class="relative flex flex-col items-start p-4 mt-3 bg-white rounded-lg cursor-pointer bg-opacity-90 group hover:bg-opacity-100 draggable"
-                        draggable="true">
+                        draggable="true" data-id="{{ $project->id }}" data-status="completed">
                         <span class="flex items-center h-6 px-3 text-xs font-semibold text-pink-500 bg-pink-200 rounded-full">Completed</span>
                         <h4 class="mt-3 text-sm font-medium">{{ $project->title }}</h4>
                         <p class="text-sm">{{ $project->description }}</p>

@@ -40,12 +40,6 @@ class PartnerController extends Controller
     public function show(Partner $partner)
     {
         $projects = $partner->projects()->latest()->get();
-
-        // Retrieve media associated with each project
-        foreach ($projects as $project) {
-            $project->load('media');
-        }
-
         return view('artist.partners.profile', compact('partner', 'projects'));
     }
 
@@ -72,4 +66,7 @@ class PartnerController extends Controller
     {
         //
     }
+
+
+
 }

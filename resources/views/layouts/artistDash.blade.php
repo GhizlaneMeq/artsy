@@ -39,6 +39,8 @@
             <div class="ml-10">
                 <a class="mx-2 text-sm font-semibold text-indigo-700" href="{{ route('projects.userProjects') }}">My
                     Projects</a>
+                <a href="{{ route('projects.createdByUser') }}"
+                    class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700">My Created Projects</a>
                 <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700"
                     href="{{ route('projects.index') }}">Projects</a>
                 <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-indigo-700"
@@ -77,7 +79,6 @@
         document.addEventListener("DOMContentLoaded", function() {
             const projects = document.querySelectorAll(".draggable");
             const columns = document.querySelectorAll(".flex-col");
-            let draggingElement = null;
 
             projects.forEach(project => {
                 project.addEventListener("click", () => {
@@ -113,16 +114,11 @@
 
             projects.forEach(draggable => {
                 draggable.addEventListener("dragstart", () => {
-                    draggingElement = draggable;
-                    setTimeout(() => {
-                        draggable.classList.add("dragging");
-                    }, 0);
+                    draggable.classList.add("dragging");
                 });
 
                 draggable.addEventListener("dragend", () => {
-                    draggingElement.classList.remove("dragging");
-                    draggingElement = null;
-                    updateProgress();
+                    draggable.classList.remove("dragging");
                 });
             });
 
@@ -144,39 +140,9 @@
                     const projectId = draggable.dataset.id;
 
                     draggable.setAttribute("data-status", newStatus);
-
-                    sendStatusUpdate(projectId, newStatus);
-
+                    updateProjectStatus(projectId, newStatus);
                 });
             });
-
-            function sendStatusUpdate(projectId, newStatus) {
-                const url = "projects/update-status";
-                const data = {
-                    projectId: projectId,
-                    newStatus: newStatus
-                };
-
-                fetch(url, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                        },
-                        body: JSON.stringify(data),
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Network response was not ok");
-                        }
-                        console.log("Project status updated successfully.");
-                    })
-                    .catch(error => {
-                        console.error("There was a problem updating the project status:", error);
-                    });
-            }
-
-
 
             function getDragAfterElement(column, y) {
                 const draggableElements = [...column.querySelectorAll(".draggable:not(.dragging)")];
@@ -196,8 +162,8 @@
                 }).element;
             }
 
-            function sendStatusUpdate(projectId, newStatus) {
-                const url = "artist/projects/update_status";
+            function updateProjectStatus(projectId, newStatus) {
+                const url = "projects/update-status";
                 const data = {
                     projectId: projectId,
                     newStatus: newStatus
@@ -207,50 +173,38 @@
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
                         },
-                        body: JSON.stringify(data),
+                        body: JSON.stringify(data)
                     })
                     .then(response => {
                         if (!response.ok) {
                             throw new Error("Network response was not ok");
                         }
                         console.log("Project status updated successfully.");
+                        const project = document.querySelector(`[data-id="${projectId}"]`);
+                        project.dataset.status = newStatus;
+                        const statusBadge = project.querySelector(".status-badge");
+                        statusBadge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(
+                        1); 
+                        statusBadge.classList.remove("bg-yellow-200", "bg-green-200", "bg-pink-200");
+                        if (newStatus === 'pending') {
+                            statusBadge.classList.add("bg-yellow-200");
+                        } else if (newStatus === 'ongoing') {
+                            statusBadge.classList.add("bg-green-200");
+                        } else if (newStatus === 'completed') {
+                            statusBadge.classList.add("bg-pink-200");
+                        }
                     })
                     .catch(error => {
                         console.error("There was a problem updating the project status:", error);
                     });
             }
 
-            function updateProgress() {
-                const totalProjects = document.querySelectorAll(".draggable").length;
-                const completedProjects = document.querySelectorAll("#completed-column .draggable").length;
-                const progress = Math.round((completedProjects / totalProjects) * 100);
 
-                document.getElementById("progressBar").style.width = progress + "%";
-                document.getElementById("progressValue").textContent = progress + "% Complete";
-            }
-        });
-
-
-
-        /* sweet alert */
-        const createProjectBtn = document.getElementById("createProjectBtn");
-
-        createProjectBtn.addEventListener("click", function(event) {
-            event.preventDefault();
-
-            Swal.fire({
-                title: 'Create Project',
-                html: 'After creating the project, you will need validation from the admin before you can work on it.',
-                icon: 'info',
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "../artist/projects/create";
-                }
-            });
         });
     </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 

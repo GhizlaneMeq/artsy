@@ -8,13 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-
-class User extends Authenticatable implements HasMedia
+class User extends Authenticatable 
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasMediaTrait;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -48,22 +45,32 @@ class User extends Authenticatable implements HasMedia
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
+
+    /**
+     * Hash the password attribute when setting it.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
 
     public function isAdmin()
     {
-        return $this->role->name === 'admin';
+        return $this->role && $this->role->name === 'admin';
     }
 
     public function isArtist()
     {
-        return $this->role->name === 'artist';
+        return $this->role && $this->role->name === 'artist';
     }
 
     public function isPartner()
     {
-        return $this->role->name === 'partner';
+        return $this->role && $this->role->name === 'partner';
     }
 
     public function role()

@@ -4,13 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
-class Project extends Model implements HasMedia
+
+class Project extends Model
 {
-    use HasFactory;
-    use HasMediaTrait;
 
     protected $fillable = [
         'title',
@@ -38,9 +35,13 @@ class Project extends Model implements HasMedia
         return $this->status;
     }
 
-    
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('pictures');
+    }
+    public function isAssigned()
+    {
+        return $this->users()->exists();
     }
 }

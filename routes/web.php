@@ -25,29 +25,33 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
 Route::get('/test', [UserController::class, 'test']);
 
 Route::prefix('admin')->group(function () {
-/* Route::resource('partners', PartnerController::class);
+Route::resource('partners', PartnerController::class);
 Route::resource('projects', ProjectController::class);
 Route::resource('artists', ArtistController::class);
-Route::resource('', AdminController::class); */
+Route::resource('', AdminController::class);
 Route::resource('users', UserController::class);
-/* Route::resource('dashboard', AdminController::class); */
+Route::resource('dashboard', AdminController::class);
 
 
 });
 
 
-Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 
 Route::prefix('artist')->group(function () {
     Route::get('user-projects', [ArtistProjectController::class, 'userProjects'])->name('projects.userProjects');
     Route::resource('projects', ArtistProjectController::class);
-    Route::post('projects/update-status',[ ArtistProjectController::class,'updatestatus']);
+    Route::post('projects/update-status',[ ArtistProjectController::class,'updateStatus']);
+    Route::post('/apply/{project_id}', [ArtistProjectController::class, 'apply'])->name('apply');
+    Route::get('artist/created-projects', [ArtistProjectController::class, 'userCreatedProjects'])->name('projects.createdByUser');
     Route::resource('partners', ArtistPartnerController::class);
 
 });
