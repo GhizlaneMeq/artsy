@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +24,9 @@ class ArtistController extends Controller
 
     }
 
+    public function create(){
+
+    }
 
 
     /**
@@ -56,8 +60,8 @@ class ArtistController extends Controller
      */
     public function show(string $id)
     {
-        $artist= User::findOrFaile($id);
-        return view('')
+        $artist = User::findOrFail($id);
+        return view('admin.artist.profile', compact('artist'));
     }
 
     /**
@@ -65,7 +69,7 @@ class ArtistController extends Controller
      */
     public function edit(string $id)
     {
-        $artist=User::findOrFail($id);
+        $artist = User::findOrFail($id);
         return view('admin.artist.edit', compact('artist'));
     }
 
@@ -74,14 +78,21 @@ class ArtistController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $artist = User::findOrFail($id);
+        $artist->update($request->all());
+        return redirect()->back()->with('success', 'Artist updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $artist = User::findOrFail($id);
+        $artist->delete();
+
+        return redirect()->back()->with('success', 'Artist deleted successfully.');
     }
+
 }

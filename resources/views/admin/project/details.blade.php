@@ -55,11 +55,11 @@
             </ul>
         </div>
         <div class="flex">
-            <a href="{{ route('projects.edit', $project) }}"
+            <a href="{{ route('admin.projects.edit', $project) }}"
                 class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
                 Edit
             </a>
-            <form action="{{ route('projects.destroy', $project) }}" method="POST">
+            <form action="{{ route('admin.projects.destroy', $project) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"

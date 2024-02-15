@@ -1,42 +1,66 @@
 @extends('layouts.dash')
 
 @section('content')
-<div style="">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-        @foreach ($projects as $project)
-        <div class="flex justify-center">
-            <div class="max-w-sm w-full lg:max-w-full lg:flex flex-1">
-                <div
-                    class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
-                    <div class="mb-8">
-                        <p class="text-sm text-gray-600 flex items-center">
-                            <svg class="fill-current text-gray-500 w-3 h-3 mr-2" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 20 20">
-                                <path
-                                    d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" />
-                            </svg>
-                            {{$project->getStatus() }}
-                        </p>
-                        <div class="text-gray-900 font-bold text-xl mb-2">{{ $project->title }}</div>
-                        <p class="text-gray-700 text-base">{{ $project->description }}</p>
-                    </div>
-                    <div class="flex items-center">
-                        <img class="w-10 h-10 rounded-full mr-4" src="/img/jonathan.jpg"
-                            alt="Avatar of Jonathan Reinink">
-                        <div class="text-sm">
-                            <p class="text-gray-900 leading-none">{{ $project->partner->name }}</p>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <a href="{{ route('projects.show', $project) }}"
-                            class="bg-green-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Details
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endforeach
+<div class="overflow-x-auto">
+    <div class="bg-white shadow-md rounded my-6">
+        <table class="table-auto w-full">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2">Status</th>
+                    <th class="px-4 py-2">Title</th>
+                    <th class="px-4 py-2">Description</th>
+                    <th class="px-4 py-2">Partner</th>
+                    <th class="px-4 py-2">Assigned Users</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($projects as $project )
+
+                <tr>
+                    <td class="border px-4 py-2">{{ $project->getStatus()}}</td>
+                    <td class="border px-4 py-2">{{ $project->title }}</td>
+                    <td class="border px-4 py-2">{{ $project->description }}</td>
+                    <td class="border px-4 py-2">{{ $project->partner->name }}</td>
+                    <td class="border px-4 py-2">
+                        <ul>
+                            @foreach($project->users as $user)
+                            <li>{{$user->firstname}} {{ $user->lastname}}</li>
+                            @endforeach
+                        </ul>
+                    </td>
+                    <td class="border px-4 py-2">
+                        @if($project->status !== 'accept')
+                        <form action="{{ route('admin.projects.update', $project) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="status" value="accept">
+                            <button onclick="acceptProject({{ $project->id }})" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Accept</button>
+                        </form>
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+
+            </tbody>
+        </table>
     </div>
 </div>
+<script>
+    function acceptProject(projectId) {
+    $.ajax({
+        url: '/admin/projects/' + projectId + '/status',
+        type: 'PATCH',
+        data: { status: 'accepted' },
+        success: function(response) {
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+            alert('An error occurred while accepting the project.');
+        }
+    });
+}
+
+</script>
 @endsection

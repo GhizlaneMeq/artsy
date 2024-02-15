@@ -3,7 +3,7 @@
 @section('content')
     <div class="col-span-5 row-span-3 bg-gray-200 p-6">
         <h2 class="text-2xl font-semibold mb-4">Create User</h2>
-        <form action="{{ route('users.store') }}" method="POST">
+        <form action="{{ route('admin.artists.store') }}" method="POST">
             @csrf
             <input type="hidden" name="role_id" value="2">
             <div class="mb-4">

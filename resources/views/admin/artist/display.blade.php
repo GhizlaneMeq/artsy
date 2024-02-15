@@ -26,10 +26,10 @@
                             <td class="border px-4 py-2">{{ $artist->lastname }}</td>
                             <td class="border px-4 py-2">{{ $artist->email }}</td>
                             <td class="border px-4 py-2">
-                                <a href="{{ route('artists.show', $artist->id) }}"
+                                <a href="{{ route('admin.artists.show', $artist->id) }}"
                                     class="text-blue-500 hover:text-blue-700 mr-2">Details</a>
-                                <a href="{{ route('artists.edit', $artist->id )}}" class="text-green-500 hover:text-green-700 mr-2">Edit</a>
-                                <form action="{{ route('artists.destroy', $artist->id) }}" method="POST"
+                                <a href="{{ route('admin.artists.edit', $artist->id )}}" class="text-green-500 hover:text-green-700 mr-2">Edit</a>
+                                <form action="{{ route('admin.artists.destroy', $artist->id) }}" method="POST"
                                     class="inline-block">
                                     @csrf
                                     @method('DELETE')

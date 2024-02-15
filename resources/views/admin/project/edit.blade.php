@@ -4,7 +4,7 @@
 <div class="container mx-auto">
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 class="text-xl font-bold mb-4">Edit Project</h2>
-        <form method="POST" action="{{ route('projects.update', $project->id) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.projects.update', $project->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 

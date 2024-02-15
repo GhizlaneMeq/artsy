@@ -48,5 +48,6 @@ class LoginController extends Controller
     } elseif ($user->isPartner()) {
         return redirect()->route('partner.index');
     }
+    
 }
 }
